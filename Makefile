@@ -23,10 +23,13 @@
 .SECONDEXPANSION:
 
 # List of subdir from which to obtain source lists
-SRCDIRS:= ekf \
+SRCDIRS:= core \
+	fileio \
+	io \
 	linux \
 	ubw32 \
-	usb 
+	usb \
+	uwrt
 
 # Include all the subdirs
 include $(patsubst %,%/Makefile,$(SRCDIRS))
@@ -59,20 +62,38 @@ export WINEDEBUG:=
 LINUX_BINS:= kalman_test acquire
 
 # PIC32 binaries:
-PIC32_BINS:= ubw32
+PIC32_BINS:= ubw32 uwrt_control
 
-# Objects to include in each binary:
+# Kalman filter test binary:
 kalman_test_OBJS:= \
-	ekf/kalman.o \
-	ekf/kalman_test.o \
+	uwrt/kalman.o \
+	uwrt/kalman_test.o \
 	linux/gnuplot.o
 kalman_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(kalman_test_OBJS))
 
+# Data acquisition binary:
 acquire_OBJS:= gen/linux/linux/acquire_main.o
 
+# Standard UBW32 Firmware:
 ubw32_OBJS:= \
 	$(patsubst %.c,$(GENDIR)/pic32/%.o,$(USB_PIC32_CC_SRCS)) \
 	$(patsubst %.c,$(GENDIR)/pic32/%.o,$(UBW_PIC32_CC_SRCS))
+
+# Core UBW32 code:
+UBW32_COMMON_OBJS:= $(CORE_PIC32_CC_SRCS) \
+	$(FILEIO_PIC32_CC_SRCS) \
+	$(IO_PIC32_CC_SRCS) \
+	$(USB_PIC32_CC_SRCS) 
+UBW32_COMMON_OBJS:= $(patsubst %.c,$(GENDIR)/pic32/%.o,$(UBW32_COMMON_OBJS))
+
+# UWRT rocket controller firmware:
+uwrt_control_OBJS:= \
+	$(UBW32_COMMON_OBJS) \
+	gen/pic32/uwrt/control.o \
+	gen/pic32/uwrt/control_main.o \
+	gen/pic32/uwrt/est_apogee.o \
+	gen/pic32/uwrt/igniters.o \
+	gen/pic32/uwrt/kalman.o \
 
 # Compilation of linux c objects:
 LINUX_CC_OBJS:=$(patsubst %.c,$(GENDIR)/linux/%.o,$(LINUX_CC_SRCS))
