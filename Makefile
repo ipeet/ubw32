@@ -37,7 +37,7 @@ CC:= gcc
 CCFLAGS:= -Wall -g -O0
 INCLUDES:= -I. 
 LDFLAGS:= $(CCFLAGS)
-LIBS:= -lm 
+LIBS:= -lm
 
 # Linux binaries:
 LINUX_BINS = kalman_test
@@ -68,7 +68,10 @@ $(LINUX_BINS): $$($$@_OBJS)
 deps: $(LINUX_CC_DEPS)
 include $(LINUX_CC_DEPS)
 
-all: $(LINUX_BINS)
+# All linux targets:
+linux: $(LINUX_BINS)
+
+all: linux
 
 clean:
 	rm -rf $(GENDIR)
