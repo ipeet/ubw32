@@ -40,7 +40,7 @@ LDFLAGS:= $(CCFLAGS)
 LIBS:= -lm
 
 # Linux binaries:
-LINUX_BINS = kalman_test
+LINUX_BINS = kalman_test acquire
 
 # Objects to include in each binary:
 kalman_test_OBJS:= \
@@ -48,6 +48,8 @@ kalman_test_OBJS:= \
 	ekf/kalman_test.o \
 	linux/gnuplot.o
 kalman_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(kalman_test_OBJS))
+
+acquire_OBJS:= gen/linux/linux/acquire_main.o
 
 # Compilation of linux c objects:
 LINUX_CC_OBJS:=$(patsubst %.c,$(GENDIR)/linux/%.o,$(LINUX_CC_SRCS))

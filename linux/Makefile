@@ -25,7 +25,8 @@ LOCAL_DIR:=$(dir $(lastword $(MAKEFILE_LIST)))
 
 # Local Source file list:
 LOCAL_CC_SRCS:= \
-	gnuplot.c
+	gnuplot.c \
+	acquire_main.c
 
 # Prepend the current directory name
 LOCAL_CC_SRCS:= $(patsubst %,$(LOCAL_DIR)%,$(LOCAL_CC_SRCS))
