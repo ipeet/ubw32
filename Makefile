@@ -24,7 +24,8 @@
 
 # List of subdir from which to obtain source lists
 SRCDIRS:= ekf \
-	linux
+	linux \
+	usb
 
 # Include all the subdirs
 include $(patsubst %,%/Makefile,$(SRCDIRS))
@@ -32,15 +33,32 @@ include $(patsubst %,%/Makefile,$(SRCDIRS))
 # Generated directories
 GENDIR:=gen
 
-# Compile config
-CC:= gcc
-CCFLAGS:= -Wall -g -O0
-INCLUDES:= -I. 
-LDFLAGS:= $(CCFLAGS)
-LIBS:= -lm
+# Linux compile config
+LINUX_CC:= gcc
+LINUX_CCFLAGS:= -Wall -Wextra -g -O0
+LINUX_INCLUDES:= -I. 
+LINUX_LDFLAGS:= $(LINUX_CCFLAGS)
+LINUX_LIBS:= -lm
+
+# PIC32 compile config
+C32_DIR:=/usr/local/lib/c32
+MPROCESSOR:=32MX460F512L
+PIC32_CC:=wine ${C32_DIR}/bin/pic32-gcc.exe
+PIC32_LD:=${PC32_CC}
+PIC32_BIN2HEX:=wine ${C32_DIR}/bin/pic32-bin2hex.exe
+PIC32_CFLAGS:= -Wall -Wextra -mprocessor=${MPROCESSOR}
+PIC32_INCLUDES:= -I. -I./usb/include -I./usb -I${C32_DIR}/include
+PIC32_LDFLAGS:= -Wall -Wextra -mprocessor=${MPROCESSOR} -Wl,--defsym,_min_heap_size=1024
+PIC32_LIBS:=
+
+# Suppress wine's noisiness.
+export WINEDEBUG:=
 
 # Linux binaries:
-LINUX_BINS = kalman_test acquire
+LINUX_BINS:= kalman_test acquire
+
+# PIC32 binaries:
+PIC32_BINS:=
 
 # Objects to include in each binary:
 kalman_test_OBJS:= \
@@ -55,33 +73,66 @@ acquire_OBJS:= gen/linux/linux/acquire_main.o
 LINUX_CC_OBJS:=$(patsubst %.c,$(GENDIR)/linux/%.o,$(LINUX_CC_SRCS))
 $(LINUX_CC_OBJS): $$(patsubst $(GENDIR)/linux/%.o,%.c,$$@)
 	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
-	$(CC) $(CCFLAGS) $(INCLUDES) $< -c -o $@
+	$(LINUX_CC) $(LINUX_CCFLAGS) $(LINUX_INCLUDES) $< -c -o $@
 
 # linux .c deps generation
 LINUX_CC_DEPS:=$(patsubst %.c,$(GENDIR)/linux/%.d,$(LINUX_CC_SRCS))
 $(LINUX_CC_DEPS): $$(patsubst $(GENDIR)/linux/%.d,%.c,$$@)
 	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
-	$(CC) $(CCFLAGS) -MM -MT $(<:%.c=$(GENDIR)/linux/%.o) -MF $@ $<
+	$(LINUX_CC) $(LINUX_INCLUDES) -MM -MT $(<:%.c=$(GENDIR)/linux/%.o) -MF $@ $<
+include $(LINUX_CC_DEPS)
 
 # linux bin compilation:
 $(LINUX_BINS): $$($$@_OBJS)
-	$(CC) $(LDFLAGS) $(LIBS) $^ -o $@
+	$(LINUX_CC) $(LINUX_LDFLAGS) $(LINUX_LIBS) $^ -o $@
 
-deps: $(LINUX_CC_DEPS)
-include $(LINUX_CC_DEPS)
+# Compilation of PIC32 C objects:
+PIC32_CC_OBJS:=$(patsubst %.c,$(GENDIR)/pic32/%.o,$(PIC32_CC_SRCS))
+$(PIC32_CC_OBJS): $$(patsubst $(GENDIR)/pic32/%.o,%.c,$$@)
+	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
+	$(PIC32_CC) $(PIC32_CFLAGS) $(PIC32_INCLUDES) $< -c -o $@
+
+# PIC32 deps generation
+PIC32_CC_DEPS:=$(patsubst %.c,$(GENDIR)/pic32/%.d,$(PIC32_CC_SRCS))
+$(PIC32_CC_DEPS):$$(patsubst $(GENDIR)/pic32/%.d,%.c,$$@)
+	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
+	$(PIC32_CC) $(PIC32_INCLUDES) -MM -MT $(<:%.c=$(GENDIR)/pic32/%.o) -MF $@ $<
+include $(PIC32_CC_DEPS)
+
+# Compilation of a pic32 binary:
+PIC32_ELFS:= $(patsubst %,$(GENDIR)/%.elf,$(PIC32_BINS))
+$(PIC32_ELFS): $$($$@_OBJS)
+	$(PIC32_LD) $(PIC32_LDFLAGS) $(PIC32_LIBS) $^ -o $@
+
+# Conversion of binary elf to a programmable hex:
+PIC32_HEXES:= $(patsubst %,%.hex,$(PIC32_BINS))
+$(PIC32_HEXES): $$(patsubst %.hex,$(GENDIR)/%.elf,$$@)
+	$(C32_BIN2HEX) $< -o $@
+
+# Make deps
+deps: $(LINUX_CC_DEPS) $(PIC32_CC_DEPS)
 
 # All linux targets:
 linux: $(LINUX_BINS)
 
-all: linux
+# All pic32 targets:
+pic32: $(PIC32_CC_OBJS)
+
+all: linux pic32
 
 clean:
 	rm -rf $(GENDIR)
 	rm -f $(LINUX_BINS)
+	rm -f $(PIC32_HEXES)
 	rm -f tags
 
 debugp:
 	@echo LINUX_CC_SRCS: $(LINUX_CC_SRCS)
 	@echo LINUX_CC_OBJS: $(LINUX_CC_OBJS)
 	@echo LINUX_CC_DEPS: $(LINUX_CC_DEPS)
+	@echo PIC32_CC_SRCS: $(PIC32_CC_SRCS)
+	@echo PIC32_CC_OBJS: $(PIC32_CC_OBJS)
+	@echo PIC32_CC_DEPS: $(PIC32_CC_DEPS)
+	@echo PIC32_ELFS:    $(PIC32_ELFS)
+	@echo PIC32_HEXES:   $(PIC32_HEXES)
 

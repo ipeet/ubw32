@@ -21,20 +21,16 @@
 # This gets the dir path that the including makefile used for this
 # makefile.  This same path should be used for this folders sources.
 # NB: immediate substitution is important, since MAKEFILE_LIST is volatile.
-EKF_DIR:=$(dir $(lastword $(MAKEFILE_LIST)))
+USB_DIR:=$(dir $(lastword $(MAKEFILE_LIST)))
 
 # Local Source file list:
-EKF_LINUX_CC_SRCS:= \
-	kalman.c \
-	kalman_test.c
-
-EKF_PIC32_CC_SRCS:= \
-	kalman.c
+USB_PIC32_CC_SRCS:= \
+	usb_descriptors.c\
+	usb_device.c \
+	usb_function_cdc.c
 
 # Prepend the current directory name
-EKF_LINUX_CC_SRCS:= $(patsubst %,$(EKF_DIR)%,$(EKF_LINUX_CC_SRCS))
-EKF_PIC32_CC_SRCS:= $(patsubst %,$(EKF_DIR)%,$(EKF_PIC32_CC_SRCS))
+USB_PIC32_CC_SRCS:= $(patsubst %,$(USB_DIR)%,$(USB_PIC32_CC_SRCS))
 
 # Append this dirs srcs to the appropriate src lists:
-LINUX_CC_SRCS:=$(LINUX_CC_SRCS) $(EKF_LINUX_CC_SRCS)
-PIC32_CC_SRCS:=$(PIC32_CC_SRCS) $(EKF_PIC32_CC_SRCS)
+PIC32_CC_SRCS:=$(PIC32_CC_SRCS) $(USB_PIC32_CC_SRCS)

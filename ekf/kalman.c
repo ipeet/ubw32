@@ -1,5 +1,4 @@
 #include <math.h>
-#include "error.h"
 #include "kalman.h"
 
 static double _mu[2] = {1317,0};
