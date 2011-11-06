@@ -57,7 +57,6 @@
 // THE BOOTLOADER PROJECT ACTUALLY CONTROLS ALL OF OUR CONFIG BITS
 
 /** V A R I A B L E S ********************************************************/
-#pragma udata
 
 /** P R I V A T E  P R O T O T Y P E S ***************************************/
 static void InitializeSystem(void);
@@ -71,7 +70,6 @@ void UserInit(void);
 /** VECTOR REMAPPING ***********************************************/
 
 /** DECLARATIONS ***************************************************/
-#pragma code
 
 /******************************************************************************
  * Function:        void main(void)
@@ -637,7 +635,7 @@ void USBCBEP0DataReceived(void)
  *
  * Note:            None
  *******************************************************************/
-BOOL USER_USB_CALLBACK_EVENT_HANDLER(USB_EVENT event, void *pdata, WORD size)
+BOOL USER_USB_CALLBACK_EVENT_HANDLER(USB_EVENT event, void *pdata __attribute__((unused)), WORD size __attribute__((unused)) )
 {
     switch(event)
     {

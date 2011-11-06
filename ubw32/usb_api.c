@@ -1,6 +1,7 @@
 // 
 // Version 1.2  03/03/09  BPS : Fixed problem with boot_software_key_sec so it will work reliably with bootloader (forgot leading .)
 
+#include <ctype.h>
 
 #include "GenericTypeDefs.h"
 #include "Compiler.h"
@@ -10,6 +11,8 @@
 #include "usb_function_cdc.h"
 #include "HardwareProfile.h"
 #include "usb_api.h"
+
+#define UNUSED __attribute__((unused))
 
 #define bitset(var,bitno) ((var) |= (1 << (bitno)))
 #define bitclr(var,bitno) ((var) &= ~(1 << (bitno)))
@@ -343,7 +346,7 @@ BOOL SwitchProgramIsPressed(void)
  *****************************************************************************/
 void UserInit(void)
 {
-	char i;
+	unsigned i;
 
 	// Loop through each I/O register, setting them all to digital inputs
 	// and making none of them open drain and turning off all pullups and 
@@ -409,14 +412,13 @@ void UserInit(void)
 void ProcessIO(void)
 {   
 	static BOOL in_cr = FALSE;
-	static char last_fifo_size;
     unsigned char tst_char;
-	unsigned char RXBufInTemp;
 	BOOL	got_full_packet = FALSE;
 	cdc_rx_len = 0;
 	BYTE numBytesRead;
 
     //Blink the LEDs according to the USB device status
+	void BlinkUSBStatus();
     BlinkUSBStatus();
 
     // User Application USB tasks
@@ -600,7 +602,6 @@ void _mon_putc (char c)
 // it for sending.
 void check_and_send_TX_data (void)
 {
-	char temp;
 	unsigned char i;
 	char TempBuf[64];
 
@@ -843,7 +844,7 @@ void parse_CU_packet(void)
 // EXAMPLE: "T1,100,2<CR>" would spend 100ms on each I/O, cycling twice
 void parse_T1_packet(void)
 {
-	int i;
+	unsigned int i;
 	unsigned int time_per_pin_ms;
 	unsigned int total_cycles;
 	const unsigned char PinArray[] = 
@@ -1125,7 +1126,7 @@ void parse_TI_packet(void)
 // We also clear out the latching triggered bits that we are 'reading'
 // i.e. any bit set in the LatchingClearMask will have it's g_latching_triggered
 // bit cleared, indicating that we have 'read' that bit.
-unsigned char CheckLatchingInput (unsigned char PortIndex, unsigned char LatchingClearMask)
+unsigned char CheckLatchingInput (unsigned char PortIndex UNUSED, unsigned char LatchingClearMask UNUSED)
 {
 //	g_latching_triggered[PortIndex] = g_latching_triggered[PortIndex] & ~LatchingClearMask;
 //	return (
@@ -1133,6 +1134,7 @@ unsigned char CheckLatchingInput (unsigned char PortIndex, unsigned char Latchin
 //		|
 //		(g_latching_state[PortIndex] & g_latching_enable[PortIndex])
 //	);
+	return 0;
 }
 
 // PW is for PWM'n a pin output
@@ -2134,15 +2136,16 @@ void StartWrite(void)
 //	EECON1bits.WR = 1;
 }
 
-unsigned char ReadEE(unsigned char Address)
+unsigned char ReadEE(unsigned char Address UNUSED)
 {
 //	EECON1 = 0x00;
 //	EEADR = Address;
 //	EECON1bits.RD = 1;
 //	return (EEDATA);
+	return 0;
 }
 
-void WriteEE(unsigned char Address, unsigned char Data)
+void WriteEE(unsigned char Address UNUSED, unsigned char Data UNUSED)
 {
 //	EEADR = Address;
 //	EEDATA = Data;

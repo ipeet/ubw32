@@ -47,7 +47,7 @@ void init_spi_sw(spi_sw_ctl_t *ctl) {
 void spi_sw_trans(spi_sw_ctl_t *ctl, const char *out, char *in, size_t bytes) {
     _idle_bus(ctl);
 
-    int i;
+    unsigned i;
     for(i=0; i<bytes; ++i) {
         in[i] = _spi_byte(ctl, out[i]);
     }

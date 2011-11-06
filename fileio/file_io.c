@@ -28,6 +28,8 @@
 #include "errno.h"
 #include "HardwareProfile.h"
 
+#define UNUSED __attribute__((unused))
+
 #define MAX_OPEN_FILES   8
 
 const char PATH_SEP =    '/';
@@ -75,11 +77,11 @@ static drv_handle_t _dev = {
 /** Null file.  Allows all operations, but does nothing. */
 static int _null_open(int fd, const char* path, int options);
 static int _null_close(int fd);
-static ssize_t _null_read(int fd, void* buf, size_t size)
+static ssize_t _null_read(int fd UNUSED, void* buf UNUSED, size_t size UNUSED)
     { return 0; }
-static ssize_t _null_write(int fd, const void* buf, size_t size)
+static ssize_t _null_write(int fd UNUSED, const void* buf UNUSED, size_t size UNUSED)
     { return size; }
-static off_t _null_lseek(int fd, off_t off, int whence)
+static off_t _null_lseek(int fd UNUSED, off_t off UNUSED, int whence UNUSED)
     { return 0; }
 static drv_handle_t _null_file = {
     .name = "null",
@@ -114,7 +116,7 @@ void init_file_io() {
 }
 
 /* Redirect simple mode stdio to this io system */
-int _mon_getc(int canblock) {
+int _mon_getc(int canblock UNUSED) {
     char ch = -1;
     if( read(0,&ch,1) != 1 ) return -1;
     return ch;
@@ -247,7 +249,7 @@ ssize_t fdgets(int fd, char* str, size_t max_size) {
     // 'read' indexes the termination, or the failed char - remove this
     str[i] = '\0';
     // Return -1 if we broke on error status.  Otherwise, return chars read:
-    return ret<0 ? -1 : i;
+    return ret<0 ? -1 : (ssize_t)i;
 }
 
 //! Write a line to file
@@ -263,7 +265,7 @@ ssize_t fdputs(int fd, const char* str) {
     }
 
     // Return -1 if we broke on error status.  Otherwise, return chars written:
-    return ret<0 ? -1 : i;
+    return ret<0 ? -1 : (ssize_t)i;
 }
 
 //! Write data to a file
@@ -461,7 +463,7 @@ void* std_find_handler(void* drv, const char* path) {
 }
 
 //! Null file open
-static int _null_open(int fd, const char* path, int options) {
+static int _null_open(int fd, const char* path UNUSED, int options) {
     _open_files[fd].flags = options;
     _open_files[fd].pos = 0;
     _open_files[fd].data = 0;

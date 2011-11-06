@@ -103,7 +103,7 @@ int press_has_new() {
 }
 
 //! Get a pressure measurement 
-static void _pump_press(void * data) {
+static void _pump_press(void * data __attribute__((unused))) {
     // check status
     unsigned char status = _spi_reg8(STATUS_RD,0);
     if( (status & 0x20) && (status != 0xff) ) { // Is data ready?

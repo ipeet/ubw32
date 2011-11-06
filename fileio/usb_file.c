@@ -23,6 +23,8 @@
 #include "HardwareProfile.h"
 #include "usb_file.h"
 
+#define UNUSED __attribute__((unused))
+
 #define TX_BUF_SIZE  256
 #define RX_BUF_SIZE  128 
 #define USB_SIZE     64   // (packet size)
@@ -81,7 +83,7 @@ static int _usb_mounted = 0;
                         | O_BINARY   )
 
 //! Open the USB
-static int _usb_open(int fd, const char* path, int options) {
+static int _usb_open(int fd, const char* path UNUSED, int options) {
     if( options & ~USB_OPEN_MODES ) {
         // Requested invalid mode
         errno = EINVAL;
@@ -96,7 +98,7 @@ static int _usb_open(int fd, const char* path, int options) {
 }
 
 //! Close the USB
-static int _usb_close(int fd) {
+static int _usb_close(int fd UNUSED) {
     --(_usb_drv.ref_count);
     return 0;
 }
@@ -164,7 +166,7 @@ static ssize_t _usb_write(int fd, const void* buf, size_t size) {
 }
 
 //! Poll the USB stack
-static void _pump_usb(void* data)
+static void _pump_usb(void* data UNUSED)
 {   
     USBDeviceTasks();
 
@@ -728,7 +730,7 @@ void USBCBEP0DataReceived(void)
  *
  * Note:            None
  *******************************************************************/
-BOOL USER_USB_CALLBACK_EVENT_HANDLER(USB_EVENT event, void *pdata, WORD size)
+BOOL USER_USB_CALLBACK_EVENT_HANDLER(USB_EVENT event, void *pdata UNUSED, WORD size UNUSED)
 {
     switch(event)
     {

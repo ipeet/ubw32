@@ -257,7 +257,7 @@ int finalize_uart(uart_t module) {
 static int _uart_putc(uart_t module, char ch);  //(single-char helper)
 
 //! Open a uart
-static int _uart_open(int fd, const char* path, int options) {
+static int _uart_open(int fd, const char* path __attribute__((unused)), int options) {
     file_desc_t *fd_data = get_fd_data(fd);
     drv_handle_t *drv = fd_data->driver;
     struct _uart_data *udata = (struct _uart_data*)(drv->data);

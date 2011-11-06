@@ -201,7 +201,7 @@ int gps_send_cmd(const char* payload, size_t len, int timeout) {
 }
 
 //! Read messages from the GPS
-static void _pump_gps(void* data) {
+static void _pump_gps(void* data __attribute__((unused))) {
     /* RX chars until we get a full line 
      * This is a non-blocking implementation, so no fdgets */
     unsigned char curch;

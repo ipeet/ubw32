@@ -84,7 +84,7 @@ static void _set_state(enum _control_states new_state) {
 void _maybe_print_state(); 
 
 // One control loop iteration
-void control(void * data) {
+void control(void * data __attribute__((unused))) {
     /* Actions to take always */
     if (gps_data() && gps_data()->gps_mode) {
         PORTCSET = 1 << 2;  // GPS fix LED

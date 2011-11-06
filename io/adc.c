@@ -28,7 +28,7 @@
 #include <fcntl.h>
 #include "core/timing.h"
 
-static int _print_period_ms = 0;
+static unsigned int _print_period_ms = 0;
 static unsigned int _print_mask = 0;
 static unsigned int _print_last = 0;
 
@@ -113,7 +113,7 @@ static int _adc_print_reading(unsigned int mask)
     return pr_len == write(1, pr_buf, pr_len) ? 0 : -1;
 }
 
-static void _adc_print_pump(void* data)
+static void _adc_print_pump(void* data __attribute__((unused)))
 {
     // Is it time yet?
     if( (sys_time() - _print_last) < _print_period_ms ) return;

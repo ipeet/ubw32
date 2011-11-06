@@ -91,7 +91,7 @@ static void pwm_cmd();
 char temp_err[32];
 
 /* Blink an LED, indicating that polling is continuing */
-void heartbeat(void* data) 
+void heartbeat(void* data __attribute__((unused))) 
 {
     // blink much more rapidly immediately after reset, to indicate reset.
     int period = sys_time() < 2000 ? 75 : 250;

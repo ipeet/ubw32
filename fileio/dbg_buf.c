@@ -27,6 +27,8 @@
 #include "core/error.h"
 #include "file_io.h"
 
+#define UNUSED __attribute__((unused))
+
 //! The debug ringbuffer
 static char _dbg_buf[ERR_BUF_SZ];
 // The start index of the ringbuffer:
@@ -68,7 +70,7 @@ int init_dbg() {
 }
 
 //! Open the debug buffer 
-static int _dbg_open(int fd, const char* path, int options) {
+static int _dbg_open(int fd, const char* path UNUSED, int options) {
     file_desc_t *fd_data = get_fd_data(fd);
     fd_data->flags = options;
     fd_data->data = 0;
@@ -92,7 +94,7 @@ static void _dbg_putc(char ch) {
 }
 
 //! Write characters to the debug buffer
-static ssize_t _dbg_write(int fd, const void* buf, size_t size) {
+static ssize_t _dbg_write(int fd UNUSED, const void* buf, size_t size) {
     if(!ERR_BUF_SZ) return 0;
     size_t i;
     for(i=0; i<size; ++i) {

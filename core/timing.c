@@ -41,15 +41,6 @@ struct _poll_n {
 //! Circular linked list of polling functions
 static struct _poll_n *_poll_list = 0;
 
-/* Node in the sorted list of upcoming timer events */
-struct _timer_n {
-    void            (*cb)(void *data);
-    void            *data;
-    struct _timer_n *next;
-};
-//! Sorted linked list of timer events
-static struct _timer_n *_timer_wait= 0;
-
 //! Current system time.  Updated in IRQ context
 volatile int _sys_time = 0;
 

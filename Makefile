@@ -113,7 +113,7 @@ include $(LINUX_CC_DEPS)
 # linux bin compilation:
 $(LINUX_BINS): $$($$@_OBJS)
 	@echo [LINUX] Linking $@
-	$(LINUX_CC) $(LINUX_LDFLAGS) $(LINUX_LIBS) $^ -o $@
+	@$(LINUX_CC) $(LINUX_LDFLAGS) $(LINUX_LIBS) $^ -o $@
 
 # Compilation of PIC32 C objects:
 PIC32_CC_OBJS:=$(patsubst %.c,$(GENDIR)/pic32/%.o,$(PIC32_CC_SRCS))
@@ -134,13 +134,13 @@ include $(PIC32_CC_DEPS)
 PIC32_ELFS:= $(patsubst %,$(GENDIR)/%.elf,$(PIC32_BINS))
 $(PIC32_ELFS): $$($$(patsubst $(GENDIR)/%.elf,%_OBJS,$$@))
 	@echo [PIC32] Linking $@
-	$(PIC32_LD) $(PIC32_LDFLAGS) $(PIC32_LIBS) $^ -o $@
+	@$(PIC32_LD) $(PIC32_LDFLAGS) $(PIC32_LIBS) $^ -o $@
 
 # Conversion of binary elf to a programmable hex:
 PIC32_HEXES:= $(patsubst %,$(GENDIR)/%.hex,$(PIC32_BINS))
 $(PIC32_HEXES): $$(patsubst %.hex,%.elf,$$@)
 	@echo [PIC32] Generating $@
-	$(PIC32_BIN2HEX) $< 
+	@$(PIC32_BIN2HEX) $< 
 
 # Make deps
 deps: $(LINUX_CC_DEPS) $(PIC32_CC_DEPS)

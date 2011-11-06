@@ -34,10 +34,8 @@ void usage(char* argv[]);  // prints usage info
 
 const char* stop_cmd = 0;
 
-void sigint_handler(int signal)
+void sigint_handler(int signal __attribute__((unused)))
 {
-    signal = 0; // go away warning
-
     if(output) fclose(output);
 
     if(stop_cmd && strlen(stop_cmd) ) {
