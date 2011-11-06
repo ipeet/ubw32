@@ -6,7 +6,7 @@
 C32_DEST="/usr/local/lib"
 C32_TARBALL="c32.tar.gz"
 
-APT_PKGS="wine libusb-dev build-essential subversion automake"
+APT_PKGS="wine libusb-dev build-essential subversion automake libtool xsltproc"
 
 UBW32_DIR="ubw32"
 UBW32_BIN="/usr/local/bin/ubw32"
@@ -78,7 +78,7 @@ function install_libhid {
 
     # Build and install
     cd libhid-svn
-    ./autogen.sh
+    ./autogen.sh --disable-werror
     if ! make install ; then
         echo "Failed to build libhid."
         cd ..
