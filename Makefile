@@ -23,7 +23,8 @@
 .SECONDEXPANSION:
 
 # List of subdir from which to obtain source lists
-SRCDIRS:= core \
+SRCDIRS:= console \
+	core \
 	fileio \
 	io \
 	linux \
@@ -62,7 +63,7 @@ export WINEDEBUG:=
 LINUX_BINS:= kalman_test acquire
 
 # PIC32 binaries:
-PIC32_BINS:= ubw32 uwrt_control
+PIC32_BINS:= ubw32 uwrt_control console
 
 # Kalman filter test binary:
 kalman_test_OBJS:= \
@@ -85,6 +86,11 @@ UBW32_COMMON_OBJS:= $(CORE_PIC32_CC_SRCS) \
 	$(IO_PIC32_CC_SRCS) \
 	$(USB_PIC32_CC_SRCS) 
 UBW32_COMMON_OBJS:= $(patsubst %.c,$(GENDIR)/pic32/%.o,$(UBW32_COMMON_OBJS))
+
+# Console firmware:
+console_OBJS:= \
+	$(UBW32_COMMON_OBJS) \
+	gen/pic32/console/main.o
 
 # UWRT rocket controller firmware:
 uwrt_control_OBJS:= \
