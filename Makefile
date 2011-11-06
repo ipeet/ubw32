@@ -99,40 +99,47 @@ uwrt_control_OBJS:= \
 LINUX_CC_OBJS:=$(patsubst %.c,$(GENDIR)/linux/%.o,$(LINUX_CC_SRCS))
 $(LINUX_CC_OBJS): $$(patsubst $(GENDIR)/linux/%.o,%.c,$$@)
 	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
-	$(LINUX_CC) $(LINUX_CCFLAGS) $(LINUX_INCLUDES) $< -c -o $@
+	@echo [LINUX] Compiling $<
+	@$(LINUX_CC) $(LINUX_CCFLAGS) $(LINUX_INCLUDES) $< -c -o $@
 
 # linux .c deps generation
 LINUX_CC_DEPS:=$(patsubst %.c,$(GENDIR)/linux/%.d,$(LINUX_CC_SRCS))
 $(LINUX_CC_DEPS): $$(patsubst $(GENDIR)/linux/%.d,%.c,$$@)
 	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
-	$(LINUX_CC) $(LINUX_INCLUDES) -MM -MT $(<:%.c=$(GENDIR)/linux/%.o) -MF $@ $<
+	@echo [LINUX] Generating deps for $<
+	@$(LINUX_CC) $(LINUX_INCLUDES) -MM -MT $(<:%.c=$(GENDIR)/linux/%.o) -MF $@ $<
 include $(LINUX_CC_DEPS)
 
 # linux bin compilation:
 $(LINUX_BINS): $$($$@_OBJS)
+	@echo [LINUX] Linking $@
 	$(LINUX_CC) $(LINUX_LDFLAGS) $(LINUX_LIBS) $^ -o $@
 
 # Compilation of PIC32 C objects:
 PIC32_CC_OBJS:=$(patsubst %.c,$(GENDIR)/pic32/%.o,$(PIC32_CC_SRCS))
 $(PIC32_CC_OBJS): $$(patsubst $(GENDIR)/pic32/%.o,%.c,$$@)
 	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
-	$(PIC32_CC) $(PIC32_CFLAGS) $(PIC32_INCLUDES) $< -c -o $@
+	@echo [PIC32] Compiling $<
+	@$(PIC32_CC) $(PIC32_CFLAGS) $(PIC32_INCLUDES) $< -c -o $@
 
 # PIC32 deps generation
 PIC32_CC_DEPS:=$(patsubst %.c,$(GENDIR)/pic32/%.d,$(PIC32_CC_SRCS))
 $(PIC32_CC_DEPS):$$(patsubst $(GENDIR)/pic32/%.d,%.c,$$@)
 	@if test ! -e $(dir $@); then mkdir -p $(dir $@); fi
-	$(PIC32_CC) $(PIC32_INCLUDES) -MM -MT $(<:%.c=$(GENDIR)/pic32/%.o) -MF $@ $<
+	@echo [PIC32] Generating deps for $<
+	@$(PIC32_CC) $(PIC32_INCLUDES) -MM -MT $(<:%.c=$(GENDIR)/pic32/%.o) -MF $@ $<
 include $(PIC32_CC_DEPS)
 
 # Compilation of a pic32 binary:
 PIC32_ELFS:= $(patsubst %,$(GENDIR)/%.elf,$(PIC32_BINS))
 $(PIC32_ELFS): $$($$(patsubst $(GENDIR)/%.elf,%_OBJS,$$@))
+	@echo [PIC32] Linking $@
 	$(PIC32_LD) $(PIC32_LDFLAGS) $(PIC32_LIBS) $^ -o $@
 
 # Conversion of binary elf to a programmable hex:
 PIC32_HEXES:= $(patsubst %,$(GENDIR)/%.hex,$(PIC32_BINS))
 $(PIC32_HEXES): $$(patsubst %.hex,%.elf,$$@)
+	@echo [PIC32] Generating $@
 	$(PIC32_BIN2HEX) $< 
 
 # Make deps
@@ -144,7 +151,10 @@ linux: $(LINUX_BINS)
 # All pic32 targets:
 pic32: $(PIC32_HEXES)
 
-all: linux pic32
+tags: $(LINUX_CC_OBJS) $(PIC32_CC_OBJS)
+	ctags -R .
+
+all: linux pic32 tags
 
 clean:
 	rm -rf $(GENDIR)
