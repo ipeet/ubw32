@@ -29,10 +29,10 @@ UWRT_PIC32_CC_SRCS:= \
 	control_main.c \
 	kalman.c \
 	est_apogee.c \
-	igniters.c \
-	test_main.c
+	igniters.c
 
 UWRT_LINUX_CC_SRCS:= \
+	est_apogee.c \
 	kalman.c \
 	kalman_test.c
 

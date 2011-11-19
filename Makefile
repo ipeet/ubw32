@@ -67,6 +67,7 @@ PIC32_BINS:= ubw32 uwrt_control console
 
 # Kalman filter test binary:
 kalman_test_OBJS:= \
+	uwrt/est_apogee.o \
 	uwrt/kalman.o \
 	uwrt/kalman_test.o \
 	linux/gnuplot.o
