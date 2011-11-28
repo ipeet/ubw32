@@ -112,7 +112,7 @@ void update_kalman(
 	}
   	//guess density of air
   	double KRhcoef1, KRhcoef2, KRhcoef3;
-	KRhcoef1 = -3.118*pow(10, -13)*h_prior*pow(h_prior, 2);
+	KRhcoef1 = -3.118*pow(10,-13)*pow(h_prior, 3);
 	KRhcoef2 = 7.4278*pow(10, -9)*pow(h_prior, 2);
 	KRhcoef3 = -0.00012549*h_prior;
 	rho_h = KRhcoef1+KRhcoef2+KRhcoef3+1.2137;

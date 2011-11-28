@@ -21,8 +21,8 @@ double est_apogee(const double *mu, double t) {
 	while(v > 0){
 		//guess density of air
   		double KRhcoef1, KRhcoef2, KRhcoef3, rho_h;
-		KRhcoef1 = -3.118e-13*pow(h, 2)*h;
-		KRhcoef2 = 7.4278e-9*pow(h, 2);
+		KRhcoef1 = -3.118*pow(10,-13)*pow(h, 3);
+		KRhcoef2 = 7.4278*pow(10, -9)*pow(h, 2);
 		KRhcoef3 = -0.00012549*h;
 		rho_h = KRhcoef1+KRhcoef2+KRhcoef3+1.2137;   
 		//guess force of drag
