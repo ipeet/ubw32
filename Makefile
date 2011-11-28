@@ -39,7 +39,8 @@ include $(patsubst %,%/Makefile,$(SRCDIRS))
 GENDIR:=gen
 
 # Linux compile config
-LINUX_CC:= gcc
+# Specific gcc version until gcc-4.6 in *buntu 11.10 cleans up its act.
+LINUX_CC:= gcc-4.4
 LINUX_CCFLAGS:= -Wall -Wextra -g -O0
 LINUX_INCLUDES:= -I. 
 LINUX_LDFLAGS:= $(LINUX_CCFLAGS)
