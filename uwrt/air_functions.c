@@ -1,6 +1,5 @@
 #include <math.h>
 #include <iostream.h>
-#include "est_apogee.h"
 
 //This file contains the functions that define the atmospheric
 //parameters

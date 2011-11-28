@@ -13,7 +13,7 @@ int main(){
 	int n;
 	for(n = 0; n<=1000; n++){
 		z[n] = (double) n;
-		air_functions(	z,
+		air_functions(	z[n],
 						air_pressure[n],
 						air_temperature[n],
 						air_density[n],
@@ -26,7 +26,8 @@ int main(){
 						air_density[n],
 						air_windspeed[n],
 						air_winddirect[n]);
-		return 0;
 	}
+	return 0;
+}
 	
 	
