@@ -61,7 +61,7 @@ PIC32_LIBS:=
 export WINEDEBUG:=
 
 # Linux binaries:
-LINUX_BINS:= kalman_test acquire
+LINUX_BINS:= kalman_test air_functions_test acquire
 
 # PIC32 binaries:
 PIC32_BINS:= ubw32 uwrt_control console
@@ -73,6 +73,12 @@ kalman_test_OBJS:= \
 	uwrt/kalman_test.o \
 	linux/gnuplot.o
 kalman_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(kalman_test_OBJS))
+
+# Air functions test binary:
+air_functions_test_OBJS:= \
+	uwrt/air_functions.o \
+	uwrt/air_functions_test.o
+air_functions_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(air_functions_test_OBJS))
 
 # Data acquisition binary:
 acquire_OBJS:= gen/linux/linux/acquire_main.o
