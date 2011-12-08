@@ -30,14 +30,16 @@ UWRT_PIC32_CC_SRCS:= \
 	kalman.c \
 	est_apogee.c \
 	igniters.c \
-	air_functions.c
+	air_functions.c\
+#	gnuplot.c\
 
 UWRT_LINUX_CC_SRCS:= \
 	est_apogee.c \
 	kalman.c \
 	kalman_test.c \
 	air_functions.c \
-	air_functions_test.c
+	air_functions_test.c\
+#	gnuplot.c\
 
 # Prepend the current directory name
 UWRT_PIC32_CC_SRCS:= $(patsubst %,$(UWRT_DIR)%,$(UWRT_PIC32_CC_SRCS))
