@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "air_functions.h"
-#include "gnuplot.h"
+#include <linux/gnuplot.h>
 //#include <iostream>
 
 int main(){

@@ -4,7 +4,7 @@
 #include <meschach/sparse.h>
 #include "air_functions.h"
 #include "rckt_lib.h"
-#include "gnuplot.h"
+#include <linux/gnuplot.h>
 //#include <iostream>
 
 int main(){
