@@ -44,8 +44,7 @@ LINUX_CC:= gcc-4.4
 LINUX_CCFLAGS:= -Wall -Wextra -g -O0
 LINUX_INCLUDES:= -I. 
 LINUX_LDFLAGS:= $(LINUX_CCFLAGS)
-LINUX_LIBS:= -lm
-
+LINUX_LIBS:= -lm -lmeschach
 # PIC32 compile config
 C32_DIR:=/usr/local/lib/c32
 MPROCESSOR:=32MX460F512L
@@ -61,7 +60,7 @@ PIC32_LIBS:=
 export WINEDEBUG:=
 
 # Linux binaries:
-LINUX_BINS:= kalman_test air_functions_test acquire
+LINUX_BINS:= kalman_test air_functions_test rckt_forces_test rckt_moments_test acquire
 
 # PIC32 binaries:
 PIC32_BINS:= ubw32 uwrt_control console
@@ -77,8 +76,27 @@ kalman_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(kalman_test_OBJS))
 # Air functions test binary:
 air_functions_test_OBJS:= \
 	uwrt/air_functions.o \
-	uwrt/air_functions_test.o
+	uwrt/air_functions_test.o \
+	linux/gnuplot.o 
 air_functions_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(air_functions_test_OBJS))
+
+# rckt forces test binary:
+rckt_forces_test_OBJS:= \
+	uwrt/rckt_forces.o \
+	uwrt/rckt_moments.o \
+	uwrt/rckt_forces_test.o \
+	uwrt/air_functions.o \
+	linux/gnuplot.o 
+rckt_forces_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(rckt_forces_test_OBJS))
+
+# rckt moments test binary:
+rckt_moments_test_OBJS:= \
+	uwrt/rckt_forces.o \
+	uwrt/rckt_moments.o \
+	uwrt/rckt_moments_test.o \
+	uwrt/air_functions.o \
+	linux/gnuplot.o 
+rckt_moments_test_OBJS:= $(patsubst %.o,$(GENDIR)/linux/%.o,$(rckt_moments_test_OBJS))
 
 # Data acquisition binary:
 acquire_OBJS:= gen/linux/linux/acquire_main.o

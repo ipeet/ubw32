@@ -38,7 +38,11 @@ UWRT_LINUX_CC_SRCS:= \
 	kalman.c \
 	kalman_test.c \
 	air_functions.c \
-	air_functions_test.c\
+	air_functions_test.c \
+	rckt_forces.c \
+	rckt_moments.c \
+	rckt_forces_test.c \
+	rckt_moments_test.c \
 #	gnuplot.c\
 
 # Prepend the current directory name

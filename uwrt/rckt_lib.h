@@ -18,9 +18,11 @@ typedef struct {
 
 //roll (R), pitch (P), yaw (W), and rates of change for those parameters
 typedef struct {
-	double R_pos; //roll position of rocket
-	double P_pos; //pitch position of rocket
-    	double W_pos; //yaw position of rocket
+	//these are fixed to the rocket and describe what sensors on the rocket would read or derive
+	//note that the XYZ of the rocket are differnt from the XYZ of the ground
+	double R_pos; //roll  position [Z axis of Rocket] 	[R at 0rad is in line with X axis of the rocket]
+	double P_pos; //pitch position [X axis of Rocket] 	[P at 0rad is in line with Z axis of the rocket]
+    	double W_pos; //yaw position   [Y axis of Rocket]	[W at 0rad is in line with Y axis of the rocket]
 	double R_vel; //roll velocity of rocket
 	double P_vel; //pitch velocity of rocket
 	double W_vel; //yaw velocity of rocket
@@ -42,10 +44,17 @@ typedef struct{
 	double Ar;   	//frontal area of rocket (m^2)
 	double Cd;	//drag coefficient of rocket (unitless)
 	double Htarget;	//Target maximum altitude (apogee) (m)
-} rckt_prmtrs
+} rckt_prmtrs;
 
-rckt_xyz rckt_forces (double time, rckt_prmtrs rckt_model, rckt_xyz rckt_flight);
+rckt_xyz rckt_forces (	double time, 
+			double dtime, 
+			rckt_prmtrs rckt_model, 
+			rckt_xyz rckt_xyz_prior, 
+			rckt_rpw rckt_rpw_prior);
 
-
-
+rckt_rpw rckt_moments (	double time, 
+			double dtime,
+			rckt_prmtrs rckt_model, 
+			rckt_xyz rckt_xyz_prior, 
+			rckt_rpw rckt_rpw_prior);
 #endif // RCKT_LIB_H_
